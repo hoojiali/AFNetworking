@@ -1257,7 +1257,11 @@ typedef enum {
         if (![mutableRequest valueForHTTPHeaderField:@"Content-Type"]) {
             [mutableRequest setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
         }
-
+        // enable sending string parameters in AFJSONRequestSerializer.
+        if ([parameters isKindOfClass:[NSString class]]) {
+            [mutableRequest setHTTPBody:[parameters dataUsingEncoding:NSUTF8StringEncoding]];
+            return mutableRequest;
+        }
         if (![NSJSONSerialization isValidJSONObject:parameters]) {
             if (error) {
                 NSDictionary *userInfo = @{NSLocalizedFailureReasonErrorKey: NSLocalizedStringFromTable(@"The `parameters` argument is not valid JSON.", @"AFNetworking", nil)};
